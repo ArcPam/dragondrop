@@ -1,133 +1,96 @@
-<!DOCTYPE html>
-<!doctype html>
+<!DOCTYPE HTML>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="initial-scale=1, maximum-scale=1,user-scalable=no" />
-    <title>FeatureTable with editing enabled | Sample | ArcGIS Maps SDK for JavaScript 4.30</title>
 
-    <link rel="stylesheet" href="https://js.arcgis.com/4.30/esri/themes/light/main.css" />
-    <script src="https://js.arcgis.com/4.30/"></script>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no">
+  <title>FeatureTable with Drag-and-Drop CSV Upload</title>
 
-    <style>
-      html,
-      body {
-        height: 100%;
-        width: 100%;
-        margin: 0;
-        padding: 0;
-      }
+  <!-- ArcGIS 4.x API CSS and JS -->
+  <link rel="stylesheet" href="https://js.arcgis.com/4.30/esri/themes/light/main.css" />
+  <script src="https://js.arcgis.com/4.30/"></script>
 
-      #viewDiv {
-        height: 50%;
-        width: 100%;
-      }
+  <style>
+    html,
+    body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+    }
 
-      .container {
-        height: 50%;
-        width: 100%;
-      }
-    </style>
+    #viewDiv {
+      height: 60%;
+      width: 100%;
+    }
 
-    <script>
-      require(["esri/Map", "esri/views/MapView", "esri/layers/FeatureLayer", "esri/widgets/FeatureTable"], (
-        Map,
-        MapView,
-        FeatureLayer,
-        FeatureTable
-      ) => {
-        let featureLayer;
-        const features = [];
+    #dropZone {
+      position: absolute;
+      top: 50px;
+      right: 10px;
+      width: 200px;
+      height: 100px;
+      background-color: rgba(0, 0, 0, 0.1);
+      border: 2px dashed #aaa;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 10;
+    }
 
-        const map = new Map({
-          basemap: "streets-navigation-vector"
-        });
+    #downloadBtn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      padding: 10px 15px;
+      background-color: #0079c1;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 14px;
+      z-index: 100;
+    }
 
-        const view = new MapView({
-          container: "viewDiv",
-          map: map,
-          center: [-87.63, 41.86],
-          zoom: 11,
-          popupEnabled: false
-        });
+    #downloadBtn:hover {
+      background-color: #005f8b;
+    }
 
-        view.when(() => {
-          featureLayer = new FeatureLayer({
-            portalItem: {
-              id: "3807c58dd48c4d32810042d8edf4a2fe"
-            },
-            outFields: ["*"],
-            title: "Chicago crime incidents"
-          });
-          map.add(featureLayer);
+    #tableDiv {
+      height: 40%;
+      width: 100%;
+    }
 
-          // Create the feature table
-          const featureTable = new FeatureTable({
-            view: view,
-            layer: featureLayer,
-            multiSortEnabled: true, // set this to true to enable sorting on multiple columns
-            editingEnabled: true,
-            tableTemplate: {
-              // autocast to TableTemplate
-              columnTemplates: [
-                // takes an array of GroupColumnTemplate and FieldColumnTemplate
-                {
-                  // autocast to GroupColumnTemplate
-                  type: "group",
-                  label: "Crime details",
-                  columnTemplates: [
-                    {
-                      type: "field",
-                      fieldName: "Primary_Type",
-                      label: "Crime type"
-                    },
-                    {
-                      type: "field",
-                      fieldName: "Description",
-                      label: "Description"
-                    },
-                    {
-                      type: "field",
-                      fieldName: "Location_Description",
-                      label: "Location description"
-                    }
-                  ]
-                },
-                {
-                  type: "group",
-                  label: "Arrest information",
-                  columnTemplates: [
-                    {
-                      type: "field",
-                      fieldName: "Arrest",
-                      label: "Arrest"
-                    },
-                    {
-                      type: "field",
-                      fieldName: "incident_date",
-                      label: "Date of incident"
-                    },
-                    {
-                      type: "field",
-                      fieldName: "Case_Number",
-                      label: "Case No.",
-                      editable: false
-                    }
-                  ]
-                }
-              ]
-            },
-            container: document.getElementById("tableDiv")
-          });
-        });
-      });
-    </script>
-  </head>
+    .table-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: #f5f5f5;
+      padding: 5px;
+    }
 
-  <body>
-    <div id="viewDiv"></div>
-    <div class="container">
-      <div id="tableDiv"></div>
-    </div>
-  </body>
+    #tableDropdown {
+      padding: 5px;
+      font-size: 16px;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="viewDiv"></div>
+
+  <!-- Drop Zone for CSV Upload -->
+  <div id="dropZone">Drop CSV files here</div>
+
+  <!-- Button to Download CSV -->
+  <button id="downloadBtn">Download CSV</button>
+
+  <!-- Table Div with Header for Dropdown -->
+  <div class="table-header">
+      
+  </div>
+  <div id="tableDiv"></div>
+
+  <script src="script.js"></script>
+</body>
+
 </html>
